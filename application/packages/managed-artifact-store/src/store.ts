@@ -207,11 +207,16 @@ function privateDirectory(path: string) {
   if (!isAbsolute(path)) throw new Error("Store 根目录必须是绝对路径。");
   if (!existsSync(path)) mkdirSync(path, { recursive: true, mode: 0o700 });
   const stat = lstatSync(path);
-  if (!stat.isDirectory() || stat.isSymbolicLink() || stat.mode & 0o077)
+  if (
+    !stat.isDirectory() ||
+    stat.isSymbolicLink() ||
+    (process.platform !== "win32" && stat.mode & 0o077)
+  )
     throw new Error("Store 根目录必须是私有的真实目录。");
 }
 
 function syncDirectory(path: string) {
+  if (process.platform === "win32") return;
   const descriptor = openSync(path, "r");
   try {
     fsyncSync(descriptor);

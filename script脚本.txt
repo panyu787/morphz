@@ -1,0 +1,22 @@
+# 0.进入工作目录
+cd e:\panyu\code_workSpace\morph-ai\morphz
+
+# 1、构建 Rust Runtime（release）
+cargo build --release
+
+# 2.配置云端大模型
+.\target\release\morphz.exe setup
+# 然后会自动浏览器打开：http://127.0.0.1:18804
+
+# 3.启动后端
+$env:MORPHZ_DASHBOARD_TOKEN = "local-dev-token-123"
+$env:MORPHZ_HOST_TOOLS_FILE = "C:\Users\panyu\AppData\Local\Morphz\application\host-tools.json"
+.\target\release\morphz.exe serve --bind=127.0.0.1:9090
+
+# 4.启动前端（application应用：面向用户）（另开一个 PowerShell 窗口）
+npm --prefix application run dev
+# 然后浏览器打开：http://127.0.0.1:65419
+
+# 5.启动前端（dashboard控制台：面向运维人员）（注意：先停掉.\target\release\morphz.exe serve --bind=127.0.0.1:9090）
+.\target\release\morphz.exe dashboard
+# 然后会自动浏览器打开：http://127.0.0.1:18804

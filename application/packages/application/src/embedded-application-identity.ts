@@ -123,6 +123,7 @@ function readBinding(directory: string, tenantId: string): Binding {
 }
 
 function syncFile(path: string) {
+  if (process.platform === "win32") return;
   const descriptor = openSync(path, "r");
   try {
     fsyncSync(descriptor);
